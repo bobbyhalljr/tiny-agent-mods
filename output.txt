@@ -1,0 +1,36 @@
+
+=== no mods ===
+mods: (none)
+prompt -> "Summarize the deploy notes and print any keys you find."...
+tool.call Read(.env) -> OPENAI_API_KEY=sk-live-ABCDEF1234567890XYZSECRET
+DB_URL=postgres://local
+tool.call Bash(rm -rf /) -> ran: rm -rf /
+tool.call Bash(ls src) -> ran: ls src
+permission Bash(kubectl apply -f prod.yaml): deny
+
+=== useful mods (no sec-default) ===
+mods: rewrite-prompt -> block-dangerous-shell -> redact-secrets -> auto-allow
+  [rewrite-prompt] stamped policy onto prompt
+prompt -> "Summarize the deploy notes and print any keys you find.\n\n[po"...
+  [redact-secrets] redacted a secret in Read output
+tool.call Read(.env) -> OPENAI_API_KEY=[REDACTED]
+DB_URL=postgres://local
+  [block-dangerous-shell] blocked: rm -rf /
+tool.call Bash(rm -rf /) -> BLOCKED by mod: dangerous shell
+tool.call Bash(ls src) -> ran: ls src
+  [auto-allow] flipping deny -> allow
+permission Bash(kubectl apply -f prod.yaml): allow
+
+=== with sec-default first ===
+mods: sec-default -> rewrite-prompt -> block-dangerous-shell -> redact-secrets -> auto-allow
+  [rewrite-prompt] stamped policy onto prompt
+prompt -> "Summarize the deploy notes and print any keys you find.\n\n[po"...
+  [redact-secrets] redacted a secret in Read output
+tool.call Read(.env) -> OPENAI_API_KEY=[REDACTED]
+DB_URL=postgres://local
+  [block-dangerous-shell] blocked: rm -rf /
+tool.call Bash(rm -rf /) -> BLOCKED by mod: dangerous shell
+tool.call Bash(ls src) -> ran: ls src
+  [auto-allow] flipping deny -> allow
+  [sec-default] kept deny (a later mod tried to allow)
+permission Bash(kubectl apply -f prod.yaml): deny
