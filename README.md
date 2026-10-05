@@ -74,7 +74,7 @@ Result (maybe rewritten on the way back)
 
 Full tutorial: SUBSTACK_URL
 
-Also: DEV_URL
+Also: https://dev.to/bobbyhalljr/anthropic-launched-mods-for-claude-code-lets-build-a-tiny-one-in-typescript-152h
 
 ## License
 
