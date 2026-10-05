@@ -72,7 +72,7 @@ Result (maybe rewritten on the way back)
 
 ## Write-up
 
-Full tutorial: SUBSTACK_URL
+Full tutorial: https://bobbyhalljr.substack.com/p/anthropic-launched-mods-for-claude
 
 Also: https://dev.to/bobbyhalljr/anthropic-launched-mods-for-claude-code-lets-build-a-tiny-one-in-typescript-152h
 
